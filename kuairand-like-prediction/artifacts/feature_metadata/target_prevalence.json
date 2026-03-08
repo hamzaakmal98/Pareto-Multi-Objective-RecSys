@@ -1,0 +1,17 @@
+{
+  "is_click": {
+    "n_positive": 7492,
+    "n_total": 7630,
+    "positive_rate": 0.981913499344692
+  },
+  "is_like": {
+    "n_positive": 239,
+    "n_total": 7630,
+    "positive_rate": 0.031323722149410226
+  },
+  "long_view": {
+    "n_positive": 3621,
+    "n_total": 7630,
+    "positive_rate": 0.4745740498034076
+  }
+}

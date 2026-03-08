@@ -128,8 +128,17 @@ def build_and_save_processed(tables: Dict[str, pd.DataFrame], config: Dict, proc
     # Impute
     df_clean = impute_missing(df_clean, numeric_strategy=config.get("impute", {}).get("numeric", "zero"))
 
-    # Separate column types
-    col_types = separate_column_types(df_clean, id_cols=config.get("id_cols", ["user_id", "video_id"]), target_col=config.get("target_col", "is_like"))
+    # Separate column types; support multiple targets via `target_cols` config
+    cfg_targets = config.get("target_cols") or ([config.get("target_col")] if config.get("target_col") else None)
+    # determine which of the configured targets actually exist in df
+    present_targets = [t for t in (cfg_targets or []) if t and t in df_clean.columns]
+    # fallback to default single target if none found
+    if not present_targets and "is_like" in df_clean.columns:
+        present_targets = ["is_like"]
+
+    # Use first present target for backward-compatible typing function
+    primary_target = present_targets[0] if present_targets else None
+    col_types = separate_column_types(df_clean, id_cols=config.get("id_cols", ["user_id", "video_id"]), target_col=primary_target)
 
     # Save artifacts
     save_df(df_clean, Path(processed_dir) / "dataset_joined.csv")
@@ -162,15 +171,31 @@ def build_and_save_processed(tables: Dict[str, pd.DataFrame], config: Dict, proc
     pd.Series(list(val_idx)).to_csv(Path(processed_dir) / "val_idx.csv", index=False)
     pd.Series(list(test_idx)).to_csv(Path(processed_dir) / "test_idx.csv", index=False)
 
-    # Prepare final X/y/meta and save
-    target = config.get("target_col", "is_like")
+    # Prepare final X/y/meta and save (support multiple targets)
+    target_cols_cfg = config.get("target_cols") or ([config.get("target_col")] if config.get("target_col") else None)
+    target_cols = [t for t in (target_cols_cfg or []) if t in df_clean.columns]
+    if not target_cols:
+        # fallback
+        if "is_like" in df_clean.columns:
+            target_cols = ["is_like"]
+    target = target_cols[0] if target_cols else None
     ids = col_types.get("ids", [])
     ts_col = config.get("timestamp_col", "timestamp")
     meta = df_clean[ids + [ts_col]] if ids or ts_col in df_clean.columns else pd.DataFrame()
-    X = df_clean[[c for c in df_clean.columns if c not in ids + [target, ts_col]]]
-    y = df_clean[target] if target in df_clean.columns else pd.Series(dtype=int)
+    # Exclude all target columns from X
+    X = df_clean[[c for c in df_clean.columns if c not in ids + target_cols + ([ts_col] if ts_col in df_clean.columns else [])]]
+    # y as DataFrame with available target columns
+    if target_cols:
+        y = df_clean[target_cols].copy()
+    else:
+        y = pd.DataFrame()
     save_df(X, Path(processed_dir) / "X.csv")
-    save_df(y.to_frame(name=target), Path(processed_dir) / "y.csv")
+    # save y as multi-column CSV (or empty)
+    if isinstance(y, pd.DataFrame) and not y.empty:
+        save_df(y, Path(processed_dir) / "y.csv")
+    else:
+        # ensure empty y file
+        Path(processed_dir).joinpath("y.csv").write_text("")
     save_df(meta, Path(processed_dir) / "meta.csv")
 
     summary = {
@@ -181,4 +206,25 @@ def build_and_save_processed(tables: Dict[str, pd.DataFrame], config: Dict, proc
         "val_size": len(val_idx),
         "test_size": len(test_idx),
     }
+    # Write feature registry artifact (for downstream EDA / model configs)
+    try:
+        from .feature_registry import FeatureRegistry as FR
+        fr = FR()
+        fr.infer_from_dfs({"joined": df_clean}) if hasattr(fr, 'infer_from_dfs') else None
+        fr_dict = fr.to_dict() if hasattr(fr, 'to_dict') else {"NUMERIC_COLUMNS": [], "CATEGORICAL_COLUMNS": []}
+    except Exception:
+        fr_dict = {"NUMERIC_COLUMNS": col_types.get("numeric", []), "CATEGORICAL_COLUMNS": col_types.get("categorical", []), "TARGET_COLUMNS": target_cols}
+    feat_meta_dir = Path(processed_dir) / "../artifacts" / "feature_metadata"
+    feat_meta_dir.mkdir(parents=True, exist_ok=True)
+    (feat_meta_dir / "feature_registry.json").write_text(json.dumps(fr_dict, indent=2))
+
+    # Compute and save target prevalence summary
+    preval = {}
+    for t in target_cols:
+        try:
+            vals = df_clean[t].dropna()
+            preval[t] = {"n_positive": int(vals.sum()), "n_total": int(len(vals)), "positive_rate": float(vals.sum() / len(vals) if len(vals) else 0.0)}
+        except Exception:
+            preval[t] = {"n_positive": 0, "n_total": 0, "positive_rate": 0.0}
+    (feat_meta_dir / "target_prevalence.json").write_text(json.dumps(preval, indent=2))
     return summary

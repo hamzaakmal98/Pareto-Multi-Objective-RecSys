@@ -1,0 +1,26 @@
+2026-03-07 22:57:38,132 kuairand DEBUG runner:68 - Logger initialized
+2026-03-07 22:57:38,133 kuairand INFO smoke_check:29 - Running smoke checks...
+2026-03-07 22:57:39,696 kuairand INFO smoke_check:51 - Imports OK
+2026-03-07 22:57:39,697 kuairand INFO smoke_check:60 - Found script: scripts/run_preprocess.py
+2026-03-07 22:57:39,697 kuairand INFO smoke_check:60 - Found script: scripts/run_train.py
+2026-03-07 22:57:39,697 kuairand INFO smoke_check:60 - Found script: scripts/run_eda.py
+2026-03-07 22:57:39,697 kuairand INFO smoke_check:60 - Found script: scripts/run_baselines.py
+2026-03-07 22:57:39,697 kuairand INFO smoke_check:60 - Found script: scripts/run_pareto_rerank.py
+2026-03-07 22:57:39,697 kuairand INFO smoke_check:60 - Found script: scripts/evaluate_model.py
+2026-03-07 22:57:39,698 kuairand INFO smoke_check:60 - Found script: scripts/generate_report_assets.py
+2026-03-07 22:57:39,700 kuairand WARNING smoke_check:82 - KuaiRand-Pure data directory not found under repo; some pipelines may fail without raw data. Pass --out-root or --data-root to scripts to point to data.
+2026-03-07 22:57:39,701 kuairand INFO smoke_check:89 - Output directories created/available
+2026-03-07 22:57:39,701 kuairand INFO smoke_check:94 - Smoke checks passed (basic).
+2026-03-07 22:59:20,545 kuairand DEBUG runner:68 - Logger initialized
+2026-03-07 22:59:20,545 kuairand INFO smoke_check:29 - Running smoke checks...
+2026-03-07 22:59:21,813 kuairand INFO smoke_check:51 - Imports OK
+2026-03-07 22:59:21,813 kuairand INFO smoke_check:60 - Found script: scripts/run_preprocess.py
+2026-03-07 22:59:21,813 kuairand INFO smoke_check:60 - Found script: scripts/run_train.py
+2026-03-07 22:59:21,813 kuairand INFO smoke_check:60 - Found script: scripts/run_eda.py
+2026-03-07 22:59:21,813 kuairand INFO smoke_check:60 - Found script: scripts/run_baselines.py
+2026-03-07 22:59:21,813 kuairand INFO smoke_check:60 - Found script: scripts/run_pareto_rerank.py
+2026-03-07 22:59:21,813 kuairand INFO smoke_check:60 - Found script: scripts/evaluate_model.py
+2026-03-07 22:59:21,813 kuairand INFO smoke_check:60 - Found script: scripts/generate_report_assets.py
+2026-03-07 22:59:21,816 kuairand WARNING smoke_check:82 - KuaiRand-Pure data directory not found under repo; some pipelines may fail without raw data. Pass --out-root or --data-root to scripts to point to data.
+2026-03-07 22:59:21,817 kuairand INFO smoke_check:89 - Output directories created/available
+2026-03-07 22:59:21,817 kuairand INFO smoke_check:94 - Smoke checks passed (basic).

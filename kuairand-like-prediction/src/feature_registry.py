@@ -2,7 +2,8 @@ from typing import Dict, List
 
 
 # Standard names and defaults used across the repo
-TARGET_COLUMN = "is_like"
+# Support multiple targets for multi-objective training
+TARGET_COLUMNS = ["is_like", "long_view", "is_follow"]
 ID_COLUMNS = ["user_id", "video_id", "session_id"]
 
 # Default banned keywords indicating post-exposure leakage
@@ -86,8 +87,10 @@ class FeatureRegistry:
 def get_training_columns(df, registry: FeatureRegistry = None) -> List[str]:
     registry = registry or FeatureRegistry()
     cols = list(df.columns)
-    # Exclude id columns, the target, and common timestamp columns from training features
-    excluded = [c for c in ID_COLUMNS if c in cols] + ([TARGET_COLUMN] if TARGET_COLUMN in cols else [])
+    # Exclude id columns, any known target columns, and common timestamp columns from training features
+    excluded = [c for c in ID_COLUMNS if c in cols]
+    # exclude any of the canonical target columns if present in dataframe
+    excluded += [c for c in TARGET_COLUMNS if c in cols]
     timestamp_candidates = [c for c in cols if c.lower() in ("timestamp", "time", "time_ms")]
     excluded += timestamp_candidates
     candidate_cols = [c for c in cols if c not in excluded]
@@ -100,5 +103,7 @@ def validate_no_banned_columns(df, registry: FeatureRegistry = None) -> None:
     registry = registry or FeatureRegistry()
     parts = registry.filter_columns(list(df.columns))
     banned = parts.get("banned", [])
-    if banned:
-        raise ValueError(f"Banned leakage columns present in input: {banned}")
+    # Remove true target columns from banned-warning check, since targets are expected
+    banned_non_targets = [c for c in banned if c not in TARGET_COLUMNS]
+    if banned_non_targets:
+        raise ValueError(f"Banned leakage columns present in input: {banned_non_targets}")

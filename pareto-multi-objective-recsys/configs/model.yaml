@@ -1,0 +1,26 @@
+model:
+  projection_dim: 128
+  n_experts: 4
+  expert_hidden: 128
+  tower_hidden: 64
+  use_task_residual: true
+  use_creator: true
+
+training:
+  batch_size: 1024
+  lr: 0.001
+  epochs: 50
+  early_stop_patience: 5
+  use_cuda: true
+
+features:
+  categorical: []
+  numeric: []
+  targets: [is_like, long_view, creator_interest_proxy]
+
+loss_weights:
+  like: 1.0
+  longview: 1.0
+  creator: 1.0
+
+out_dir: artifacts

@@ -1,0 +1,16 @@
+pandas
+numpy
+scikit-learn
+scipy
+lightgbm
+torch
+torchvision
+pyyaml
+matplotlib
+seaborn
+jupyter
+nbformat
+notebook
+pytest
+tqdm
+joblib

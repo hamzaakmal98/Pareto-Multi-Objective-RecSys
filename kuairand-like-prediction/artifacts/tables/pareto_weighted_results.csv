@@ -1,0 +1,10 @@
+strategy,target,k,ndcg
+pareto_weighted,is_click,5,0.9890577647563572
+pareto_weighted,is_click,10,0.9900522483620959
+pareto_weighted,is_click,20,0.9901733162289634
+pareto_weighted,is_like,5,0.03402361509561744
+pareto_weighted,is_like,10,0.03750250342685043
+pareto_weighted,is_like,20,0.03750250342685043
+pareto_weighted,long_view,5,0.6678858390715053
+pareto_weighted,long_view,10,0.6722804318801154
+pareto_weighted,long_view,20,0.6736256922589338

@@ -1,0 +1,12 @@
+# Data pipeline configuration
+data_root: null  # Path to KuaiRand-Pure/data directory; auto-detected if null
+out_root: null   # Output root for processed datasets; defaults to repo root
+random_log_priority:
+  - log_random_4_22_to_5_08_pure.csv
+  - log_standard_4_22_to_5_08_pure.csv
+  - log_standard_4_08_to_4_21_pure.csv
+
+split:
+  train_frac: 0.7
+  val_frac: 0.15
+  test_frac: 0.15

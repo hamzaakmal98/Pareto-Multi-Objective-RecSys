@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
+.env
+.venv
+venv/
+
+# Jupyter
+.ipynb_checkpoints
+
+# OS
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Data & artifacts
+data/
+artifacts/
+reports/
+
+# Virtual env
+.venv/
+
+# Mac
+.DS_Store

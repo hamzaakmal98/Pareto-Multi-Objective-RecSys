@@ -1,0 +1,20 @@
+{
+  "NUMERIC_COLUMNS": [
+    "hourmin",
+    "is_rand",
+    "tab",
+    "hour_of_day",
+    "day_of_week",
+    "time_norm",
+    "duration_s",
+    "play_time_s"
+  ],
+  "CATEGORICAL_COLUMNS": [
+    "split"
+  ],
+  "TARGET_COLUMNS": [
+    "is_click",
+    "is_like",
+    "long_view"
+  ]
+}

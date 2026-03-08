@@ -7,7 +7,7 @@ data:
   videos: ''
   video_stats: ''
 
-target_col: is_like
+target_cols: [is_like, long_view, is_follow]
 timestamp_col: time_ms
 id_cols: [user_id, video_id]
 

@@ -1,6 +1,6 @@
 # KuaiRand Multi-Objective Recommendation (Research)
 
-This repository contains an end-to-end research implementation for multi-objective recommendation using KuaiRand-style interaction logs. The project investigates multi-task prediction models and several ranking strategies — including Pareto-frontier reranking — to produce principled trade-offs between engagement signals.
+This repository contains an end-to-end research implementation for multi-objective recommendation using KuaiRand-style interaction logs. The project investigates multi-task prediction models and several ranking strategies - including Pareto-frontier reranking - to produce principled trade-offs between engagement signals.
 
 ## Project Overview
 - Objective: predict and rank items for users optimizing multiple engagement signals simultaneously (click, like, long view).
@@ -19,33 +19,43 @@ This repository contains an end-to-end research implementation for multi-objecti
 - Multi-task neural network with a shared encoder and task-specific heads. Each head outputs a probability for its target and uses binary cross-entropy loss.
 - Training features: per-task loss weighting, early stopping on validation, and checkpointing of best model. Test predictions are saved for downstream reranking experiments.
 
-### Architecture Diagram
+## System Architecture
 
 ```mermaid
+
 flowchart LR
-  A[KuaiRand-Pure Dataset] --> B[Data Engineering]
-  B --> B1[join interaction, user, and video features]
-  B --> B2[remove leakage columns]
-  B --> B3[create time and numeric features]
-  B --> B4[scale and split data]
-  B4 --> C[Multi-Task Prediction Model]
-  C --> C1[click score]
-  C --> C2[like score]
-  C --> C3[long_view score]
-  C --> D[Ranking Strategies]
-  D --> D1[click-only]
-  D --> D2[like-only]
-  D --> D3[longview-only]
-  D --> D4[weighted scalar]
-  D --> D5[Pareto frontier]
-  D --> D6[Pareto + weighted]
-  D --> E[Evaluation]
-  E --> E1[NDCG@5]
-  E --> E2[NDCG@10]
-  E --> E3[NDCG@20]
+
+A[KuaiRand-Pure Dataset] --> B[Data Engineering]
+
+B --> B1[join interaction, user, and video features]
+B --> B2[remove leakage columns]
+B --> B3[create time and numeric features]
+B --> B4[scale and split data]
+
+B4 --> C[Multi-Task Prediction Model]
+
+C --> C1[click score]
+C --> C2[like score]
+C --> C3[long_view score]
+
+C --> D[Ranking Strategies]
+
+D --> D1[click-only]
+D --> D2[like-only]
+D --> D3[longview-only]
+D --> D4[weighted scalar]
+D --> D5[Pareto frontier]
+D --> D6[Pareto + weighted]
+
+D --> E[Evaluation]
+
+E --> E1[NDCG 5]
+E --> E2[NDCG 10]
+E --> E3[NDCG 20]
+
 ```
 
-Diagram: an end-to-end pipeline showing preprocessing of the KuaiRand dataset, multi-task prediction producing three engagement scores, several reranking strategies, and NDCG-based evaluation.
+Diagram: An end-to-end pipeline showing preprocessing of the KuaiRand dataset, multi-task prediction producing three engagement scores, several reranking strategies, and NDCG-based evaluation.
 ## Ranking Strategies Evaluated
 - click-only / like-only / longview-only: rank purely by a single-task score.
 - weighted_scalar: scalarize multiple scores via a weighted sum, then sort.
@@ -53,7 +63,7 @@ Diagram: an end-to-end pipeline showing preprocessing of the KuaiRand dataset, m
 - pareto_weighted: order Pareto-frontier candidates by a secondary weighted score to control trade-offs.
 
 ## Evaluation Metrics
-- NDCG@5, NDCG@10, NDCG@20 averaged across users — reported in `artifacts/tables/` and `reports/analysis/`.
+- NDCG@5, NDCG@10, NDCG@20 averaged across users - reported in `artifacts/tables/` and `reports/analysis/`.
 - Per-task predictive metrics (ROC-AUC, PR-AUC) are reported for baseline models (logistic, LightGBM) and the multi-task model.
 
 ## Key Insights
@@ -70,7 +80,6 @@ Diagram: an end-to-end pipeline showing preprocessing of the KuaiRand dataset, m
 
 ## Future Work
 - Run systematic weight sweeps for scalarization and Pareto secondary-ordering; add statistical tests across users.
-- Build a reproducible notebook that recreates key figures from saved predictions and tables.
 - Explore personalized weightings (per-user or per-cohort) and evaluate in A/B tests or logged offline policy learning.
 
 ---

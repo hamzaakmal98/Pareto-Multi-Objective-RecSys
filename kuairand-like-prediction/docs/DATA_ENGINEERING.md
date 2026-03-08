@@ -125,10 +125,3 @@ Limitations of the preprocessing pipeline
 - Candidate generation / retrieval is out-of-scope; experiments assume a fixed candidate pool derived from the impressions log.
 - The pipeline does not currently implement advanced de-duplication or temporal smoothing for user histories; these are possible future improvements.
 
-Files to review
----------------
-- Preprocessing script: `scripts/prepare_kuairand_data.py` (main entrypoint for dataset creation).
-- Feature registry and scaler: `artifacts/feature_metadata/feature_registry.json`, `artifacts/feature_metadata/scaler.json`.
-- Processed data folder: `data/processed/` (X, y, meta, and split indices).
-
-If you want, I can produce a short notebook that shows the preprocessing checks (leakage tests, histogram of time features, and a small unit test that verifies `is_click` is not present in `X`).
